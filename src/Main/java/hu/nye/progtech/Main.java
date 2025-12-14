@@ -12,7 +12,6 @@ import java.util.Scanner;
 
 class Main {
 
-    // Naplózás beállítása (ez kell az 5-öshöz)
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
@@ -20,7 +19,6 @@ class Main {
         Scanner scanner = new Scanner(System.in);
         HighScoreManager highScoreManager;
 
-        // Adatbázis inicializálása
         try {
             highScoreManager = new HighScoreManager();
         } catch (SQLException e) {
@@ -44,7 +42,6 @@ class Main {
                     break;
                 case "2":
                     if (highScoreManager != null) {
-                        // ITT HÍVJUK MEG AZ ÚJ METÓDUST:
                         highScoreManager.printHighScores();
                     } else {
                         System.out.println("Az adatbázis nem elérhető.");
@@ -70,19 +67,13 @@ class Main {
 
     private static void playGame(Scanner scanner, String playerName, HighScoreManager highScoreManager) {
         LOGGER.info("Új játék indult: {}", playerName);
-        // 10x10-es tábla létrehozása
         Board board = new Board(10, 10);
         Random random = new Random();
-
-        // A játékos az 'X', a gép az 'O' (a feladatkiírás szerint 'o', de konzolon az 'O' jobban látszik)
         char playerSymbol = 'X';
         char computerSymbol = 'O';
 
         while (true) {
-            // 1. Pálya kirajzolása (ehhez kell egy toString a Board osztályba, vagy itt egy ciklus)
             System.out.println(board);
-
-            // --- JÁTÉKOS KÖRE ---
             boolean validMove = false;
             while (!validMove) {
                 System.out.println("Te következel! Adj meg egy sort és egy oszlopot (pl: 0 5):");
@@ -103,7 +94,6 @@ class Main {
                 }
             }
 
-            // Nyerés ellenőrzése
             if (board.checkWin(playerSymbol)) {
                 System.out.println(board);
                 System.out.println("GRATULÁLOK! Nyertél!");
@@ -115,23 +105,18 @@ class Main {
                 break;
             }
 
-            // --- GÉP KÖRE (Random) ---
             System.out.println("A gép gondolkodik...");
             boolean computerMoved = false;
             while (!computerMoved) {
-                // Egyszerű random generálás (primitív AI)
                 int r = random.nextInt(10);
                 int c = random.nextInt(10);
                 Position compPos = new Position(r, c);
-                // Csak akkor lép, ha a hely üres (a placeSymbol ezt ellenőrzi)
                 if (board.placeSymbol(compPos, computerSymbol)) {
                     computerMoved = true;
                     System.out.println("A gép lépett ide: " + r + " " + c);
                 }
-                // (Itt érdemes lenne figyelni, hogy ne fusson végtelen ciklusba, ha tele a tábla)
             }
 
-            // Gép nyerésének ellenőrzése
             if (board.checkWin(computerSymbol)) {
                 System.out.println(board);
                 System.out.println("SAJNÁLOM, a gép nyert!");
